@@ -175,6 +175,23 @@ class apb_test9 extends apb_test;
 endclass
 
 
+class apb_test10 extends apb_test;
+ apb_transaction10 trans;
+ function new(virtual apb_interface drv_vif,virtual apb_interface mon_vif);
+    super.new(drv_vif,mon_vif);
+  endfunction
+
+  task run();
+    env=new(drv_vif,mon_vif);
+    env.build();
+    begin 
+    trans = new();
+    env.gen.blueprint= trans;
+    end
+    env.start();
+  endtask
+endclass
+
 class test_regression extends apb_test;
  apb_transaction  trans0;
  apb_transaction1 trans1;
@@ -186,6 +203,7 @@ class test_regression extends apb_test;
  apb_transaction7 trans7;
  apb_transaction8 trans8;
  apb_transaction9 trans9;
+ apb_transaction10 trans10;
   function new(virtual apb_interface drv_vif,
                virtual apb_interface mon_vif);
     super.new(drv_vif,mon_vif);
@@ -271,6 +289,16 @@ class test_regression extends apb_test;
     begin 
     trans9 = new();
     env.gen.blueprint= trans9;
+    end
+    env.start;
+//////////////////////////////////////////////////////
+
+
+
+///////////////////////////////////////////////////////
+    begin 
+    trans10 = new();
+    env.gen.blueprint= trans10;
     end
     env.start;
 //////////////////////////////////////////////////////

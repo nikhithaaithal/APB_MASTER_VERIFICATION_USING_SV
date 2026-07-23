@@ -4,28 +4,20 @@ class apb_monitor;
  mailbox #(apb_transaction) mbx_ms;
  virtual apb_interface.MON  vif;
  
- //covergroup mon_cg;s
-
- //endgroup
 
  function new(virtual apb_interface.MON vif, mailbox #(apb_transaction) mbx_ms);
    this.vif=vif;
    this.mbx_ms=mbx_ms;
-   //mon_cg=new();
  endfunction
  
  task start();
   repeat(4) @ (vif.mon_cb);
-  //for(int i=0;i<`NUM_TRANSACTION;i++)
+ 
   forever 
    begin
    @(vif.mon_cb);
    mon_trans=new();
-   //do 
-    //@(vif.mon_cb);
-   //while(!(vif.mon_cb.transfer_done));
-   //while(!(vif.mon_cb.PREADY));
-   //while(!(vif.mon_cb.PSEL)&& !(vif.mon_cb.PREADY) && !(vif.mon_cb.PENABLE) );
+   
    mon_trans.rdata_out     =vif.mon_cb.rdata_out;
    mon_trans.transfer_done =vif.mon_cb.transfer_done;
    mon_trans.error         =vif.mon_cb.error;
@@ -45,12 +37,10 @@ class apb_monitor;
    mon_trans.PREADY      = vif.mon_cb.PREADY;
    mon_trans.PRDATA      = vif.mon_cb.PRDATA;
    
-  $display("%t :MONITOR PASSING THE DATA OUT TO SCOREBOARD PSEL=%0d,PADDR=%0h, PWDATA=%0h, PENABLE=%0d,PWRITE=%0d,PSTRB=%0b,rdata_out=%0h ,transfer_done=%0d, error=%0d",$time,mon_trans.PSEL,mon_trans.PADDR, mon_trans.PWDATA, mon_trans.PENABLE,mon_trans.PWRITE,mon_trans.PSTRB,mon_trans.rdata_out ,mon_trans.transfer_done, mon_trans.error);
+  $display("%t:MONITOR PASSING THE DATA OUT TO SCOREBOARD PSEL=%0d,PADDR=%0h, PWDATA=%0h, PENABLE=%0d,PWRITE=%0d,PSTRB=%0b,rdata_out=%0h ,transfer_done=%0d, error=%0d",$time,mon_trans.PSEL,mon_trans.PADDR, mon_trans.PWDATA, mon_trans.PENABLE,mon_trans.PWRITE,mon_trans.PSTRB,mon_trans.rdata_out ,mon_trans.transfer_done, mon_trans.error);
   mbx_ms.put(mon_trans);
-$display("///////////////////////////////////output monitor////////////////////////////");
 
-  //mon_cg.sample();
-  //$display("OUTPUT COVERAGE");
+
   end
  endtask
 endclass

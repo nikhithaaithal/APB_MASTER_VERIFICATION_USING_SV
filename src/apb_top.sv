@@ -34,6 +34,7 @@ apb_test6 tb6 ;
 apb_test7 tb7 ;
 apb_test8 tb8 ;
 apb_test9 tb9 ;
+apb_test10 tb10;
 test_regression tb_regression;
 
 
@@ -51,6 +52,7 @@ initial
     tb7 = new(inf.DRV,inf.MON);
     tb8 = new(inf.DRV,inf.MON);
     tb9 = new(inf.DRV,inf.MON);
+    tb10 = new(inf.DRV,inf.MON);
     tb_regression = new(inf.DRV,inf.MON);
 
     tb_regression.run();

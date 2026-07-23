@@ -9,12 +9,31 @@ class apb_driver;
  covergroup drv_cg;
   transfer_cp   :coverpoint drv_trans.transfer {bins b1[]={0,1};}
   write_read_cp :coverpoint drv_trans.write_read {bins b2[]={0,1};}
-  strb_in_cp    :coverpoint drv_trans.strb_in;
-  addr_in_cp    :coverpoint drv_trans.addr_in;
+  strb_in_cp    :coverpoint drv_trans.strb_in{
+    bins no_strobe    = {4'b0000};
+    bins valid_strobe []= {[4'b0001:4'b1111]};
+    }
+  addr_in_cp    :coverpoint drv_trans.addr_in
+                        {
+                         bins low  = {[0:63]};
+                         bins mid  = {[64:127]};
+                         bins high = {[128:255]};
+                         }
   wdata_cp      :coverpoint drv_trans.wdata_in;
   pslverr_cp    :coverpoint drv_trans.PSLVERR;
-  pready_cp     :coverpoint drv_trans.PREADY;
-  prdata_cp     :coverpoint drv_trans.PRDATA;
+  pready_cp     :coverpoint vif.drv_cb.PREADY;
+  prdata_cp     :coverpoint drv_trans.PRDATA{
+                         bins d_low  = {[32'h0000_0000:32'h7fff_ffff]};
+                         bins d_mid  = {[32'h8000_0000:32'hffff_ffff]};
+                         }
+
+  //cross coverage
+  write_read_cpxaddr_in_cp :cross write_read_cp ,addr_in_cp;
+  write_read_cpxwdata_cp   :cross write_read_cp ,wdata_cp;
+  write_read_cpxstrb_in_cp :cross write_read_cp ,strb_in_cp ;
+  write_read_cpxpslverr_cp :cross write_read_cp ,pslverr_cp; 
+ 
+
  endgroup
  
  function new(mailbox #(apb_transaction) mbx_gd, virtual apb_interface.DRV vif);
@@ -66,7 +85,7 @@ class apb_driver;
       vif.drv_cb.PSLVERR    <=drv_trans.PSLVERR;  
       vif.drv_cb.PRDATA     <=drv_trans.PRDATA;
       end
-    
+
     $display(" %t:DRIVER WRITE OPERATION AFTER WAIT STATES:transfer=%0d write_read=%0d addr_in=%0h wdata_in=%0h strb_in=%b PSLVERR=%0d PREADY=%0d PRDATA=%0h PSEL =%0d,PENABLE=%0d",
                   $time,drv_trans.transfer, vif.drv_cb.write_read, vif.drv_cb.addr_in,
                   vif.drv_cb.wdata_in, vif.drv_cb.strb_in, vif.drv_cb.PSLVERR,

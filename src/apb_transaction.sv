@@ -46,7 +46,7 @@ endclass
 class apb_transaction1 extends apb_transaction;
  
  constraint c3{ write_read == 1;}
-  constraint w{wait_states == 0;}
+  constraint w{ wait_states == 0;}
  constraint c4{ transfer ==1;}
 
  virtual function apb_transaction copy();
@@ -301,9 +301,33 @@ class apb_transaction9 extends apb_transaction;
    copy9.wait_states  = this.wait_states;     
    return copy9;
  endfunction
-
-
 endclass
+
+//////////////////Low Transfer/////////////////// 
+class apb_transaction10 extends apb_transaction;
+ 
+ constraint c3 {transfer == 0;}
+
+
+ virtual function apb_transaction copy();
+   apb_transaction10 copy10;
+   copy10 = new();
+   copy10.transfer    = this.transfer;
+   copy10.addr_in     = this.addr_in;
+   copy10.write_read  = this.write_read;
+   copy10.PSLVERR     = this.PSLVERR;
+   copy10.PREADY      = this.PREADY;
+   copy10.wdata_in    = this.wdata_in;
+   copy10.PRDATA      = this.PRDATA; 
+   copy10.strb_in     = this.strb_in;
+   copy10.wait_states  = this.wait_states;     
+   return copy10;
+ endfunction
+endclass
+
+
+
+
 
 
 
